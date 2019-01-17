@@ -119,11 +119,11 @@ def tidy_mw_content(content):
 def get_mw_entry(url):
     forecast = BeautifulSoup(fetch_mw_forecast(url)).find(id="main-content")
 
-    updated = dateparser.parse(
-        norm(forecast.find("div", class_="forecast-date").text.replace("Issued:", ""))
-    ).isoformat()
+    title = norm(
+        forecast.find("div", class_="forecast-date").text.replace("Issued:", "")
+    )
+    updated = dateparser.parse(title).isoformat()
 
-    title = norm(forecast.find("div", class_="forecast-date").text)
     summary = forecast.find("div", class_="synopsis").prettify()
     content = tidy_mw_content(forecast).prettify()
 
