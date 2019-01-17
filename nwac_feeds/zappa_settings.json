@@ -5,6 +5,8 @@
         "profile_name": "default",
         "project_name": "nwac-feeds",
         "runtime": "python3.6",
-        "s3_bucket": "zappa-bmkp2vack"
+        "s3_bucket": "zappa-bmkp2vack",
+        "certificate_arn": "arn:aws:acm:us-east-1:372057302496:certificate/cc1d17ea-0875-4b18-9e4a-f915bec77b9e",
+        "domain": "nwac-feeds.dev.asford.info"
     }
 }
