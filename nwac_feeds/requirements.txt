@@ -1,0 +1,9 @@
+flask
+requests
+zappa
+requests
+beautifulsoup4
+attrs
+structlog
+dateparser
+Jinja2
