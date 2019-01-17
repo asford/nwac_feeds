@@ -118,7 +118,6 @@ def tidy_mw_content(content):
 @lru_cache(maxsize=128)
 def get_mw_entry(url):
     forecast = BeautifulSoup(fetch_mw_forecast(url)).find(id="main-content")
-    log.info("main-content", pretty=forecast.prettify())
 
     updated = dateparser.parse(
         norm(forecast.find("div", class_="forecast-date").text.replace("Issued:", ""))
