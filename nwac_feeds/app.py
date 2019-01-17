@@ -76,7 +76,7 @@ def get_mw_feed(url):
         base_url + a.attrs["href"]
         for a in toplevel.find(id="main-content").find_all("a")
         if "mountain-weather-forecast" in a.attrs["href"]
-    ]
+    ][:2]
 
     log.info("get_mw_feed.get_archive_links", links=links)
 
@@ -95,7 +95,6 @@ def get_mw_feed(url):
 
 
 @logf
-@lru_cache(maxsize=128)
 def fetch_mw_forecast(url):
     req = requests.get(url)
     req.raise_for_status()
@@ -103,6 +102,7 @@ def fetch_mw_forecast(url):
 
 
 @logf
+@lru_cache(maxsize=128)
 def get_mw_entry(url):
     forecast = BeautifulSoup(fetch_mw_forecast(url)).find(id="main-content")
 
@@ -115,10 +115,8 @@ def get_mw_entry(url):
         + " "
         + norm(forecast.find("div", class_="forecast-date").text)
     )
-    summary = "\n\n".join(
-        norm(p.text) for p in forecast.find("div", class_="synopsis").find_all("p")
-    )
-    content = str(forecast)
+    summary = forecast.find("div", class_="synopsis").prettify()
+    content = forecast.prettify()
 
     return Entry(
         id=url, link=url, title=title, updated=updated, summary=summary, content=content
@@ -130,12 +128,8 @@ def mountain_weather_forecast_feed():
     feed = get_mw_feed(base_url + "mountain-weather-forecast/archives/")
 
     return Response(
-        render_template(
-            "atom.xml",
-            feed=feed,
-            feed_url = request.base_url,
-        ),
-        mimetype="application/atom+xml",
+        render_template("atom.xml", feed=feed, feed_url=request.base_url),
+        mimetype="application/xml",
     )
 
 

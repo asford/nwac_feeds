@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <id>{{ feed.id }}</id>
@@ -13,7 +13,16 @@
     <title>{{ entry.title }}</title>
     <updated>{{ entry.updated }}</updated>
     
-    <summary>{{ entry.summary }}</summary>
+    <summary type="html" >
+    <![CDATA[
+      {{ entry.summary | safe }}</summary>
+    ]]>
+    </summary>
+    <content type="html">
+    <![CDATA[
+      {{ entry.content | safe }}
+    ]]>
+    </content>
     <link href="{{ entry.link }}"/>
   </entry>
   {% endfor %}
