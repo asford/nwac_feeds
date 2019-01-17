@@ -76,7 +76,7 @@ def get_mw_feed(url):
         base_url + a.attrs["href"]
         for a in toplevel.find(id="main-content").find_all("a")
         if "mountain-weather-forecast" in a.attrs["href"]
-    ][:2]
+    ]
 
     log.info("get_mw_feed.get_archive_links", links=links)
 
