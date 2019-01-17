@@ -101,22 +101,32 @@ def fetch_mw_forecast(url):
     return req.text
 
 
+def decompose(e):
+    if e:
+        e.decompose()
+
+
+def tidy_mw_content(content):
+    decompose(content.find("aside"))
+    jump_bar = [p for p in content.find_all("p") if "Jump to" in p.text][0]
+    synopsis = content.find(class_="synopsis")
+    synopsis.insert_after(jump_bar)
+    return content
+
+
 @logf
 @lru_cache(maxsize=128)
 def get_mw_entry(url):
     forecast = BeautifulSoup(fetch_mw_forecast(url)).find(id="main-content")
+    log.info("main-content", pretty=forecast.prettify())
 
     updated = dateparser.parse(
-        norm(forecast.find("div", class_="forecast-date").text).split("Issued:")[1]
+        norm(forecast.find("div", class_="forecast-date").text.replace("Issued:", ""))
     ).isoformat()
 
-    title = (
-        norm(forecast.find("h1").text)
-        + " "
-        + norm(forecast.find("div", class_="forecast-date").text)
-    )
+    title = norm(forecast.find("div", class_="forecast-date").text)
     summary = forecast.find("div", class_="synopsis").prettify()
-    content = forecast.prettify()
+    content = tidy_mw_content(forecast).prettify()
 
     return Entry(
         id=url, link=url, title=title, updated=updated, summary=summary, content=content
